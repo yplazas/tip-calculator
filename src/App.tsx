@@ -1,47 +1,34 @@
 import Header from "./components/Header";
 import Card from "./components/Card";
-import { menuItems } from "./data/db";
 import useOrder from "./hooks/useOrder";
+import OrderTotals from "./components/OrderTotals";
+import Propina from "./components/Propina";
+import OrderContents from "./components/OrderContents";
+import MenuItems from "./components/MenuItems";
 
 function App() {
-  const { order, addItem } = useOrder();
+  const { order, tip, setTip, addItem, removeItem, placeOrder } = useOrder();
 
   return (
     <>
       <Header />
-      <main className="max-w-300 mx-auto my-6 gap-6 grid md:grid-cols-2">
+      <main className="max-w-300 mx-auto my-6 gap-6 grid grid-cols-2 max-lg:grid-cols-1 max-lg:mx-2.5">
         <Card title="Menu">
-          {menuItems.map((item) => (
-            <button
-              key={item.id}
-              className="flex justify-between items-center 
-              border-2 border-teal-400 p-2 rounded-lg cursor-pointer transition
-              hover:bg-teal-400 hover:text-white active:bg-teal-200"
-              onClick={() => addItem(item)}
-            >
-              <p>{item.name}</p>
-              <p>${item.price}</p>
-            </button>
-          ))}
+          <MenuItems addItem={addItem} />
         </Card>
         <Card title="Consumo">
           {order.length === 0 ? (
             <p>la orden está vacía</p>
           ) : (
-            order.map((item) => (
-              <div
-                key={item.id}
-                className="flex justify-between items-center border-2 border-teal-400 p-2 rounded-lg"
-              >
-                <p>{item.name}</p>
-                <p>{item.quantity}</p>
-              </div>
-            ))
+            <>
+              <OrderContents order={order} removeItem={removeItem} />
+              <Propina setTip={setTip} />
+              <OrderTotals order={order} tip={tip} placeOrder={placeOrder} />
+            </>
           )}
         </Card>
       </main>
     </>
   );
 }
-
 export default App;
